@@ -26,9 +26,12 @@ es6不再检查是否有重复属性，如果有，将取最后一个属性的�
 》所有字符键按照他们被加入对象的顺序排序
 》所有symbol键按照它们被加入对象的顺序排序
 6.增强对象原型
-》改变对象原型：Object.setPrototypeOf方法，改变任意指定对象的原型。。。不咋用，学着用
-》
+》改变对象原型：Object.setPrototypeOf方法，改变任意指定对象的原型。。。不咋用，学着用,例子
+》简化原型访问的super引用，例子
 7.正式的方法定义
+es6正式将方法定义为一个函数，它会有一个内部的[[HomeObject]]属性容纳这个方法从属的对象。
+super的所有引用都是通过[[HomeObject]]属性来确定后续的运行过程，第一步在[[HomeObject]]属性上调用Object.get
+PrototypeOf方法检索原型的引用，然后搜索原型找到同名函数。例子
 */
 // 》属性初始值的简写，例子 es5
 function createPerson(name, age){
@@ -73,4 +76,56 @@ function mixin(receiver, supplier){
     });
     return receiver;
 }
+// Object.setPrototypeOf()方法，改变对象的原型
+let person = {
+    getGreeting() {
+        return 'hello';
+    }
+};
+let dog = {
+    getGreeting(){
+        return "woof";
+    }
+};
+let friend = Object.create(person);
+console.log(friend.getGreeting()); //'hello'
+console.log(Object.getPrototypeOf(friend) === person); //true
+//将原型设置为dog
+Object.setPrototypeOf(friend, dog);
+console.log(friend.getGreeting());  //woof
+console.log(Object.getPrototypeOf(friend) === dog);//true
 
+// 重写对象实例的方法，又需要调用与它同名的原型方法，在es5中可以这样写
+let person = {
+    getGreeting() {
+        return 'hello';
+    }
+};
+let dog = {
+    getGreeting() {
+        return "woof";
+    }
+};
+let friend = {
+    getGreeting() {
+        //es5
+        return Object.getPrototypeOf(this).getGreeting.call(this) + ", hi";
+        //es6
+        return super.getGreeting() + ", hi!";
+    }
+};
+//将原型设置为person
+Object.setPrototypeOf(friend, person);
+console.log(friend.getGreeting());  //hello hi
+console.log(Object.getPrototypeOf(friend) === person); //true
+
+//将原型设为dog
+Object.setPrototypeOf(friend, dog); 
+console.log(friend.getGreeting());   //woof, hi
+console.log(Object.getPrototypeOf(friend) === dog); //true
+
+let person = {
+    getGreeting() {   //这个方法的[[HomeObject]]属性为person
+        return 'hello';
+    }
+}
