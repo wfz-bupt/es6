@@ -27,9 +27,15 @@ entries():返回一个迭代器，其值为多个键值对
 values(): 返回一个迭代器，其值为集合的值
 keys(): 值为集合种的所有键盘名
 例子
+数组和set集合默认的迭代器是values方法，map集合默认的迭代器是entries方法
+解构与for-of循环
 ＊
 》展开运算符和非数组可迭代对象
+展开运算符可以用于所有可迭代对象, 就是将其它可迭代对象转为数组。
+将map类型转为数组，例子
 》高级迭代器功能
+*给迭代器传递参数，例子
+＊
 》异步任务执行
 》
 */
@@ -99,3 +105,16 @@ for (let entry of colors.entries()){
 let data = new Map();
 data.set("title", "unde");
 data.set("format", "ebook");
+for ( let item of data ){
+    console.log(item);
+}
+for (let [key, value] of data){
+    console.log("key" + key, "value" + value);
+}
+
+// 将map类型转为数组，例子
+ let map = new Map([["name", "nico"], ["age", 25]]);
+ let array = [...map];
+
+// 给迭代器传递参数，例子
+
